@@ -27,7 +27,7 @@ const addMovie = async (req, res) => {
 
   try {
     // Check if the movie already exists
-    const existingMovie = await movieRepository.findMovieByTitleOrDirector(title, director);
+    const existingMovie = await movieRepository.findMovieByTitleAndDirector(title, director);
     if (existingMovie) {
       return res.status(400).json(errorResponse(400, "Movie with this title or director already exists"));
     }
@@ -49,6 +49,7 @@ const addMovie = async (req, res) => {
       return res.status(400).json(errorResponse(400, "Poster image is required."));
     }
 
+    
     // Create a new movie entry
     const movie = await movieRepository.createMovie({
       title,
@@ -63,7 +64,7 @@ const addMovie = async (req, res) => {
       posterImage,
     });
 
-    res.status(201).json(successResponse("Movie added successfully", { movie }));
+    res.status(201).json(successResponse(  movie,{message:"Movie added successfully"} ));
   } catch (error) {
     res.status(500).json(errorResponse(500, error.message));
   }
@@ -85,7 +86,26 @@ const getAllMovies = async (req, res) => {
     }
   };
 
+
+  // Fetch a movie by ID
+const getMovieById = async (req, res) => {
+    const { movieId } = req.params;
+  
+    try {
+      // Find movie by ID
+      const movie = await movieRepository.findMovieById(movieId);
+      
+      if (!movie) {
+        return res.status(404).json(errorResponse(404, "Movie not found"));
+      }
+  
+      res.status(200).json(successResponse( movie,{message:"Movie fetched successfully"} ));
+    } catch (error) {
+      res.status(500).json(errorResponse(500, error.message));
+    }
+  };
 module.exports = {
   addMovie,
-  getAllMovies
+  getAllMovies,
+  getMovieById
 };

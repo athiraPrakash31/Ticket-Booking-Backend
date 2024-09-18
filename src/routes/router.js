@@ -17,8 +17,11 @@ router.post('/login', validateUserLogin(), validateUser, userController.login);
 // Add movie
 router.post('/admin/addMovie', multerConfig.single('posterImage'), jwtMiddleware, movieController.addMovie);
 
-// get all theaters
+// get all movies
 router.get("/admin/getAllMovies", movieController.getAllMovies);
+
+// get one movie using id
+router.get("/admin/Movies/:movieId",movieController.getMovieById);
 
 // Add theater
 router.post('/admin/addTheaters', theaterRequest.validateTheater(), theaterRequest.handleValidationErrors,jwtMiddleware, theaterController.addTheater);
